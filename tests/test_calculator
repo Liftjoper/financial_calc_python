@@ -1,0 +1,75 @@
+import pytest
+from calculator import (
+    calc_simple_interest,
+    calc_compound_growth,
+    calc_tax_deduction,
+)
+
+
+def test_simple_interest_standard():
+    assert calc_simple_interest(1000, 10, 2) == 200.0
+
+def test_simple_interest_another_scenario():
+    assert calc_simple_interest(500, 5, 3) == 75.0
+
+def test_simple_interest_zero_amounts():
+    assert calc_simple_interest(0, 10, 5) == 0.0
+
+def test_simple_interest_negative_principal():
+    with pytest.raises(ValueError):
+        calc_simple_interest(-100, 10, 2)
+
+def test_simple_interest_negative_rate():
+    with pytest.raises(ValueError):
+        calc_simple_interest(100, -10, 2)
+
+def test_simple_interest_negative_time():
+    with pytest.raises(ValueError):
+        calc_simple_interest(100, 10, -2)
+
+
+
+def test_compound_growth_yearly():
+    result = calc_compound_growth(1000, 10, 1, periods_per_year=1)
+    assert result == pytest.approx(1100.0)
+
+def test_compound_growth_monthly():
+    result = calc_compound_growth(1000, 12, 1, periods_per_year=12)
+    assert result == pytest.approx(1126.825, rel=1e-3)
+
+def test_compound_growth_zero_initial():
+    assert calc_compound_growth(0, 10, 5) == 0.0
+
+def test_compound_growth_negative_initial():
+    with pytest.raises(ValueError):
+        calc_compound_growth(-1000, 10, 1)
+
+def test_compound_growth_float_periods():
+    with pytest.raises(ValueError):
+        calc_compound_growth(1000, 10, 1, periods_per_year=1.5)
+
+def test_compound_growth_zero_periods():
+    with pytest.raises(ValueError):
+        calc_compound_growth(1000, 10, 1, periods_per_year=0)
+
+
+
+def test_tax_deduction_standard():
+    assert calc_tax_deduction(1000, 20) == 200.0
+
+def test_tax_deduction_another_scenario():
+    assert calc_tax_deduction(500, 13) == 65.0
+
+def test_tax_deduction_zero_percent():
+    assert calc_tax_deduction(1000, 0) == 0.0
+
+def test_tax_deduction_full_percent():
+    assert calc_tax_deduction(1000, 100) == 1000.0
+
+def test_tax_deduction_negative_percent():
+    with pytest.raises(ValueError):
+        calc_tax_deduction(1000, -5)
+
+def test_tax_deduction_over_100_percent():
+    with pytest.raises(ValueError):
+        calc_tax_deduction(1000, 101)
